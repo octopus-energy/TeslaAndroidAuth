@@ -7,6 +7,7 @@ Lightweight Android library for Tesla SSO Authentication based on [Tesla JSON AP
 
 ## Usage
 
+Supports only **Compose** for now
 ```
 TeslAuth(
         onError = {
@@ -16,7 +17,7 @@ TeslAuth(
             // Handle success
         },
         loadingIndicator = {
-            // Handle loading
+            // Your custom loading indicator composable
         }
     )
 ```
