@@ -2,10 +2,9 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("plugin.serialization")
-    kotlin("kapt")
 }
 
-val composeVersion = "1.1.0-rc02"
+val composeVersion = "1.1.0-rc01"
 
 android {
     compileSdk  = 31
