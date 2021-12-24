@@ -1,7 +1,11 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("plugin.serialization")
+    kotlin("kapt")
 }
+
+val composeVersion = "1.1.0-rc02"
 
 android {
     compileSdk  = 31
@@ -27,7 +31,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.1.0-rc01"
+        kotlinCompilerExtensionVersion = composeVersion
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -35,5 +39,19 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.ui:ui:$composeVersion")
+    implementation("androidx.compose.material:material:$composeVersion")
+    implementation("androidx.compose.runtime:runtime:$composeVersion")
+    implementation("androidx.compose.ui:ui-util:$composeVersion")
 
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    val ktorVersion = "1.6.7"
+    implementation("io.ktor:ktor-client-android:$ktorVersion")
+    implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")
+    val lifecycleVersion = "2.4.0"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
 }
