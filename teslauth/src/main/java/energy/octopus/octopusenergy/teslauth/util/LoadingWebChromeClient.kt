@@ -1,4 +1,4 @@
-package energy.octopus.octopusenergy.teslauth
+package energy.octopus.octopusenergy.teslauth.util
 
 import android.webkit.WebChromeClient
 import android.webkit.WebView

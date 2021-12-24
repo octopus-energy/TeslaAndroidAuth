@@ -1,10 +1,9 @@
-package energy.octopus.octopusenergy.teslauth
+package energy.octopus.octopusenergy.teslauth.util
 
 import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import energy.octopus.octopusenergy.teslauth.util.TESLA_AUTH_TAG
 
 internal class TeslaWebViewClient(
     val onCodeParsed: (String?) -> Unit,
