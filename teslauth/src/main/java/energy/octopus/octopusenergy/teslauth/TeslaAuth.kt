@@ -3,6 +3,8 @@ package energy.octopus.octopusenergy.teslauth
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.*
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -80,6 +82,11 @@ private fun WebAuth(
         factory = { context ->
             WebView(context).apply {
                 visibility = View.INVISIBLE
+                layoutParams = ViewGroup.LayoutParams(
+                    MATCH_PARENT,
+                    MATCH_PARENT
+                )
+
                 settings.apply {
                     userAgentString = "UA"
                     // TODO Check if there's a way to authenticate without enabling JavaScript
