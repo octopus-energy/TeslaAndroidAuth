@@ -5,6 +5,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "TeslaAndroidAuth"
+rootProject.name = "tesla-android-auth"
 include(":app")
 include(":teslauth")
