@@ -1,9 +1,17 @@
 # TeslaAndroidAuth
 Lightweight Android library for Tesla SSO Authentication based on [Tesla JSON API (Unofficial)](https://tesla-api.timdorr.com)
 
-## Setup (WIP)
+## Setup
 
-- `mavenCentral` artifact coming soon
+```
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("energy.octopus:tesla-android-auth:$teslaAndroidVersion")
+}
+```
 
 ## Usage
 
