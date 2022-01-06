@@ -24,7 +24,7 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
             .appendPath("oauth2")
             .appendPath("v3")
             .appendPath("authorize")
-            .appendQueryParameter("client_id", CLIENT_ID)
+            .appendQueryParameter("client_id", WEB_CLIENT_ID)
             .appendQueryParameter("code_challenge", codeChallenge.challenge)
             .appendQueryParameter("code_challenge_method", codeChallenge.method)
             .appendQueryParameter("redirect_uri", REDIRECT_URL)
@@ -47,7 +47,7 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                 val bearerTokenResponse = api.exchangeAuthCodeForBearerToken(
                     BearerTokenRequest(
                         grantType = "authorization_code",
-                        clientId = CLIENT_ID,
+                        clientId = WEB_CLIENT_ID,
                         code = code,
                         codeVerifier = codeChallenge.verifier,
                         redirectUri = REDIRECT_URL,
@@ -56,9 +56,9 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                 Log.i(TESLA_AUTH_TAG, "Got bearer token $bearerTokenResponse")
                 val authTokenResponse = api.exchangeBearerTokenForAccessToken(
                     bearerTokenResponse.accessToken, AccessTokenRequest(
-                        grantType = "urn:ietf:params:oauth:grant-type:jwt-bearer",
-                        clientId = "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384",
-                        clientSecret = "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"
+                        grantType = JWT_BEARER_GRANT_TYPE,
+                        clientId = CLIENT_ID,
+                        clientSecret = CLIENT_SECRET,
                     )
                 )
                 Log.i(TESLA_AUTH_TAG, "Got auth token $authTokenResponse")
