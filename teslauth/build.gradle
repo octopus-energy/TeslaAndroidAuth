@@ -55,7 +55,7 @@ dependencies {
 
 ext {
     PUBLISH_GROUP_ID = 'energy.octopus'
-    PUBLISH_VERSION = '0.1'
+    PUBLISH_VERSION = '0.1.1'
     PUBLISH_ARTIFACT_ID = 'tesla-android-auth'
 }
 
