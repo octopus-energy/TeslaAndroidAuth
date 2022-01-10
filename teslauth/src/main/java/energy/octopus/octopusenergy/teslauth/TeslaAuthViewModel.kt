@@ -39,8 +39,7 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
     private val _event = MutableSharedFlow<Event>()
     val event: SharedFlow<Event> = _event
 
-    fun onAuthorizationCodeReceived(code: String?) {
-        code ?: return
+    fun getBearerToken(code: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
@@ -54,8 +53,30 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                     )
                 )
                 Logger.log("Got bearer token $bearerTokenResponse")
+                _event.emit(
+                    Event.ReceivedBearerToken(
+                        AuthToken(
+                            accessToken = bearerTokenResponse.accessToken,
+                            refreshToken = bearerTokenResponse.refreshToken,
+                            expiresIn = bearerTokenResponse.expiresIn,
+                            createdAt = bearerTokenResponse.createdAt
+                        )
+                    )
+                )
+            } catch (t: Throwable) {
+                _event.emit(Event.Error(t))
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun getAccessToken(bearerToken: AuthToken) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
                 val authTokenResponse = api.exchangeBearerTokenForAccessToken(
-                    bearerTokenResponse.accessToken, AccessTokenRequest(
+                    bearerToken.accessToken, AccessTokenRequest(
                         grantType = JWT_BEARER_GRANT_TYPE,
                         clientId = CLIENT_ID,
                         clientSecret = CLIENT_SECRET,
@@ -63,18 +84,19 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                 )
                 Logger.log("Got auth token $authTokenResponse")
                 _event.emit(
-                    Event.Success(
+                    Event.ReceivedAccessToken(
                         AuthToken(
                             accessToken = authTokenResponse.accessToken,
                             refreshToken = authTokenResponse.refreshToken,
                             expiresIn = authTokenResponse.expiresIn,
                             createdAt = authTokenResponse.createdAt
-                                ?: throw IllegalStateException("Created at is null")
                         )
                     )
                 )
             } catch (t: Throwable) {
                 _event.emit(Event.Error(t))
+            } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -85,6 +107,7 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
 
     sealed class Event {
         data class Error(val t: Throwable) : Event()
-        data class Success(val token: AuthToken) : Event()
+        data class ReceivedBearerToken(val token: AuthToken) : Event()
+        data class ReceivedAccessToken(val token: AuthToken) : Event()
     }
 }

@@ -2,6 +2,7 @@ package energy.octopus.octopusenergy.teslaandroidauth
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import energy.octopus.octopusenergy.teslauth.TeslAuth
 import energy.octopus.octopusenergy.teslauth.logging.LogLevel
 
+private const val TAG = "tesla_auth_test"
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +29,13 @@ class MainActivity : AppCompatActivity() {
             if (message == null) {
                 TeslAuth(
                     logLevel = LogLevel.DEFAULT,
-                    onSuccess = {
+                    onAuthorizationCodeReceived = {
+                        Log.i(TAG, "Authorization Code: $it")
+                    },
+                    onBearerTokenReceived = {
+                        Log.i(TAG, "Bearer token: $it")
+                    },
+                    onAccessTokenReceived = {
                         message = it.toString()
                     }, onError = {
                         message = it.toString()

@@ -1,6 +1,5 @@
 package energy.octopus.octopusenergy.teslauth
 
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -26,20 +25,31 @@ import energy.octopus.octopusenergy.teslauth.util.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+
+typealias OnAuthorizationCodeReceivedCallback = (String) -> Unit
+typealias OnTokenReceivedCallback = (AuthToken) -> Unit
+
 /**
  *  A Composable that shows an embedded [WebView] for Tesla Authentication
  *  @param modifier Modifier to be applied to the button
  *  @param logLevel specifies the [LogLevel] to be used
- *  @param onSuccess callback called with the [AuthToken] as parameter if getting the authorization token was successful,
- *  see response & request at https://tesla-api.timdorr.com/api-basics/authentication#post-https-owner-api.teslamotors.com-oauth-token
+ *  @param onAuthorizationCodeReceived callback called with the code represented by a [String] as parameter if getting the authorization code was successful,
+ *  @see <a href="https://tesla-api.timdorr.com/api-basics/authentication#step-2-obtain-an-authorization-code">Step 2: Obtain an authorization code</a>
+ *  @param onBearerTokenReceived callback called with the [AuthToken] as parameter if getting the bearer token was successful,
+ *  @see <a href="https://tesla-api.timdorr.com/api-basics/authentication#step-3-exchange-authorization-code-for-bearer-token">Step 3: Exchange authorization code for bearer token</a>
+ *  @param onAccessTokenReceived callback called with the [AuthToken] as parameter if getting the authorization token was successful,
+ *  @see <a href="https://tesla-api.timdorr.com/api-basics/authentication#refreshing-an-access-token">https://tesla-api.timdorr.com/api-basics/authentication#refreshing-an-access-token</a>
  *  @param onError callback called with the [Throwable] that occurred when trying to get the authorization token
  *  @param loadingIndicator optional composable, default is [CircularProgressIndicator]
  */
+
 @Composable
 fun TeslAuth(
     modifier: Modifier = Modifier,
     logLevel: LogLevel = LogLevel.EMPTY,
-    onSuccess: (AuthToken) -> Unit = {},
+    onAuthorizationCodeReceived: OnAuthorizationCodeReceivedCallback? = null,
+    onBearerTokenReceived: OnTokenReceivedCallback? = null,
+    onAccessTokenReceived: OnTokenReceivedCallback? = null,
     onError: (Throwable) -> Unit = {},
     loadingIndicator: @Composable BoxScope.() -> Unit = {
         CircularProgressIndicator(
@@ -57,7 +67,14 @@ fun TeslAuth(
         WebAuth(
             url = viewModel.url,
             modifier = modifier.fillMaxSize(),
-            onCodeReceived = viewModel::onAuthorizationCodeReceived,
+            onCodeReceived = {
+                if (it != null) {
+                    onAuthorizationCodeReceived?.invoke(it)
+                    if (onBearerTokenReceived != null || onAccessTokenReceived != null) {
+                        viewModel.getBearerToken(it)
+                    }
+                }
+            },
             onPageLoaded = viewModel::onPageLoaded,
         )
         if (isLoading) {
@@ -68,7 +85,13 @@ fun TeslAuth(
     LaunchedEffect(viewModel.event) {
         viewModel.event.onEach {
             when (it) {
-                is Success -> onSuccess(it.token)
+                is ReceivedBearerToken -> {
+                    onBearerTokenReceived?.invoke(it.token)
+                    if (onAccessTokenReceived != null) {
+                        viewModel.getAccessToken(it.token)
+                    }
+                }
+                is ReceivedAccessToken -> onAccessTokenReceived?.invoke(it.token)
                 is Error -> onError(it.t)
             }
         }.launchIn(this)

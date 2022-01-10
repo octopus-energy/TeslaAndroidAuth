@@ -12,5 +12,5 @@ data class AuthToken(
     val accessToken: String,
     val refreshToken: String,
     val expiresIn: Long,
-    val createdAt: Long
+    val createdAt: Long?
 )
