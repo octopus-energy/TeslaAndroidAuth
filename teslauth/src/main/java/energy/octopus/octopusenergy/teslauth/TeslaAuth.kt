@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import energy.octopus.octopusenergy.teslauth.TeslaAuthViewModel.Event.*
+import energy.octopus.octopusenergy.teslauth.logging.LogLevel
+import energy.octopus.octopusenergy.teslauth.logging.Logger
 import energy.octopus.octopusenergy.teslauth.model.AuthToken
 import energy.octopus.octopusenergy.teslauth.util.*
 import kotlinx.coroutines.flow.launchIn
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.onEach
 /**
  *  A Composable that shows an embedded [WebView] for Tesla Authentication
  *  @param modifier Modifier to be applied to the button
+ *  @param logLevel specifies the [LogLevel] to be used
  *  @param onSuccess callback called with the [AuthToken] as parameter if getting the authorization token was successful,
  *  see response & request at https://tesla-api.timdorr.com/api-basics/authentication#post-https-owner-api.teslamotors.com-oauth-token
  *  @param onError callback called with the [Throwable] that occurred when trying to get the authorization token
@@ -35,6 +38,7 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun TeslAuth(
     modifier: Modifier = Modifier,
+    logLevel: LogLevel = LogLevel.EMPTY,
     onSuccess: (AuthToken) -> Unit = {},
     onError: (Throwable) -> Unit = {},
     loadingIndicator: @Composable BoxScope.() -> Unit = {
@@ -45,6 +49,7 @@ fun TeslAuth(
         )
     },
 ) {
+    Logger.level = logLevel
     val viewModel: TeslaAuthViewModel = viewModel()
     val isLoading by viewModel.isLoading.collectAsState()
 
@@ -97,8 +102,8 @@ private fun WebAuth(
                     visibility = View.VISIBLE
                     onPageLoaded()
                 }
-                Log.i(TESLA_AUTH_TAG, "User agent: ${settings.userAgentString}")
-                Log.i(TESLA_AUTH_TAG, "Opening url for login: $url")
+                Logger.log("User agent: ${settings.userAgentString}")
+                Logger.log("Opening url for login: $url")
                 loadUrl(url)
                 setBackListener()
             }

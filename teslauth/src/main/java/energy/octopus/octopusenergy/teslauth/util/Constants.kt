@@ -1,7 +1,5 @@
 package energy.octopus.octopusenergy.teslauth.util
 
-internal const val TESLA_AUTH_TAG = "Tesla_Auth"
-
 internal const val STATE = "TESLA_AUTH_STATE"
 
 internal const val WEB_CLIENT_ID = "ownerapi"

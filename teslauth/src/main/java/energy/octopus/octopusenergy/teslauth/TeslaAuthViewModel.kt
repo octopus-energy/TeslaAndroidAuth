@@ -1,10 +1,10 @@
 package energy.octopus.octopusenergy.teslauth
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import energy.octopus.octopusenergy.teslauth.api.TeslaApi
+import energy.octopus.octopusenergy.teslauth.logging.Logger
 import energy.octopus.octopusenergy.teslauth.model.AccessTokenRequest
 import energy.octopus.octopusenergy.teslauth.model.AuthToken
 import energy.octopus.octopusenergy.teslauth.model.BearerTokenRequest
@@ -53,7 +53,7 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                         redirectUri = REDIRECT_URL,
                     )
                 )
-                Log.i(TESLA_AUTH_TAG, "Got bearer token $bearerTokenResponse")
+                Logger.log("Got bearer token $bearerTokenResponse")
                 val authTokenResponse = api.exchangeBearerTokenForAccessToken(
                     bearerTokenResponse.accessToken, AccessTokenRequest(
                         grantType = JWT_BEARER_GRANT_TYPE,
@@ -61,7 +61,7 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                         clientSecret = CLIENT_SECRET,
                     )
                 )
-                Log.i(TESLA_AUTH_TAG, "Got auth token $authTokenResponse")
+                Logger.log("Got auth token $authTokenResponse")
                 _event.emit(
                     Event.Success(
                         AuthToken(

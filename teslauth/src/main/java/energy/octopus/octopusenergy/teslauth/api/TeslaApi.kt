@@ -1,5 +1,6 @@
 package energy.octopus.octopusenergy.teslauth.api
 
+import energy.octopus.octopusenergy.teslauth.logging.LogLevel.*
 import energy.octopus.octopusenergy.teslauth.model.AccessTokenRequest
 import energy.octopus.octopusenergy.teslauth.model.BearerTokenRequest
 import energy.octopus.octopusenergy.teslauth.model.TokenResponse
@@ -9,13 +10,16 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import energy.octopus.octopusenergy.teslauth.logging.Logger as TeslaAuthLogger
 
 internal class TeslaApi {
 
-    val client = HttpClient {
-        install(Logging) {
-            logger = Logger.SIMPLE
-            level = LogLevel.ALL
+    private val client = HttpClient {
+        if (TeslaAuthLogger.level == DEFAULT) {
+            install(Logging) {
+                logger = Logger.SIMPLE
+                level = LogLevel.ALL
+            }
         }
         install(JsonFeature) {
             serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
