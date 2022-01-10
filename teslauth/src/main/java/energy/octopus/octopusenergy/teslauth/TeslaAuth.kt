@@ -37,7 +37,7 @@ fun TeslAuth(
     modifier: Modifier = Modifier,
     onSuccess: (AuthToken) -> Unit = {},
     onError: (Throwable) -> Unit = {},
-    loadingIndicator: @Composable BoxScope.() -> Unit = {
+    Loading: @Composable () -> Unit = {
         CircularProgressIndicator(
             Modifier.align(
                 Alignment.Center
