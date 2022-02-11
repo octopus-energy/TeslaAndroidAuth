@@ -89,8 +89,11 @@ fun TeslAuth(
                 }
                 is ReceivedAccessToken -> onAccessTokenReceived?.invoke(it.token)
                 is Error -> onError(it.t)
-                is AuthorizationCodeReceived -> if (onBearerTokenReceived != null || onAccessTokenReceived != null) {
-                    viewModel.getBearerToken(it.code)
+                is AuthorizationCodeReceived -> {
+                    onAuthorizationCodeReceived?.invoke(it.code)
+                    if (onBearerTokenReceived != null || onAccessTokenReceived != null) {
+                        viewModel.getBearerToken(it.code)
+                    }
                 }
                 Dismiss -> onDismiss()
             }
