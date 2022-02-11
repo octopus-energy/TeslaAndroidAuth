@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,29 +26,34 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var message by remember { mutableStateOf<String?>(null) }
-            if (message == null) {
-                TeslAuth(
-                    logLevel = LogLevel.DEFAULT,
-                    onAuthorizationCodeReceived = {
-                        Log.i(TAG, "Authorization Code: $it")
-                    },
-                    onBearerTokenReceived = {
-                        Log.i(TAG, "Bearer token: $it")
-                    },
-                    onAccessTokenReceived = {
-                        message = it.toString()
-                    }, onError = {
-                        message = it.toString()
-                    })
-            } else {
-                Box(Modifier.padding(16.dp)) {
-                    Text(
-                        message ?: "",
-                        Modifier
-                            .wrapContentSize()
-                            .align(Alignment.Center)
-                    )
+            MaterialTheme {
+                var message by remember { mutableStateOf<String?>(null) }
+                if (message == null) {
+                    TeslAuth(
+                        logLevel = LogLevel.DEFAULT,
+                        onAuthorizationCodeReceived = {
+                            Log.i(TAG, "Authorization Code: $it")
+                        },
+                        onBearerTokenReceived = {
+                            Log.i(TAG, "Bearer token: $it")
+                        },
+                        onAccessTokenReceived = {
+                            message = it.toString()
+                        }, onError = {
+                            message = it.toString()
+                        }, onDismiss = {
+                            message = "Dismissed"
+                        })
+                } else {
+                    Box(Modifier.padding(16.dp)) {
+                        Text(
+                            text = message ?: "",
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .align(Alignment.Center),
+                            style = MaterialTheme.typography.body2.copy(color = MaterialTheme.colors.onPrimary)
+                        )
+                    }
                 }
             }
         }

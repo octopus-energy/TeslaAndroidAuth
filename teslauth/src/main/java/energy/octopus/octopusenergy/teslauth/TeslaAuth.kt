@@ -40,6 +40,7 @@ typealias OnTokenReceivedCallback = (AuthToken) -> Unit
  *  @param onAccessTokenReceived callback called with the [AuthToken] as parameter if getting the authorization token was successful,
  *  @see <a href="https://tesla-api.timdorr.com/api-basics/authentication#refreshing-an-access-token">https://tesla-api.timdorr.com/api-basics/authentication#refreshing-an-access-token</a>
  *  @param onError callback called with the [Throwable] that occurred when trying to get the authorization token
+ *  @param onDismiss called when the underlying [WebView] can't go back and the back press represents a dismiss of the Authentication WebView
  *  @param loadingIndicator optional composable, default is [CircularProgressIndicator]
  */
 
@@ -51,6 +52,7 @@ fun TeslAuth(
     onBearerTokenReceived: OnTokenReceivedCallback? = null,
     onAccessTokenReceived: OnTokenReceivedCallback? = null,
     onError: (Throwable) -> Unit = {},
+    onDismiss: () -> Unit = {},
     loadingIndicator: @Composable BoxScope.() -> Unit = {
         CircularProgressIndicator(
             Modifier.align(
@@ -67,15 +69,9 @@ fun TeslAuth(
         WebAuth(
             url = viewModel.url,
             modifier = modifier.fillMaxSize(),
-            onCodeReceived = {
-                if (it != null) {
-                    onAuthorizationCodeReceived?.invoke(it)
-                    if (onBearerTokenReceived != null || onAccessTokenReceived != null) {
-                        viewModel.getBearerToken(it)
-                    }
-                }
-            },
+            onCodeReceived = viewModel::onCodeReceived,
             onPageLoaded = viewModel::onPageLoaded,
+            onDismiss = onDismiss,
         )
         if (isLoading) {
             loadingIndicator()
@@ -93,6 +89,10 @@ fun TeslAuth(
                 }
                 is ReceivedAccessToken -> onAccessTokenReceived?.invoke(it.token)
                 is Error -> onError(it.t)
+                is AuthorizationCodeReceived -> if (onBearerTokenReceived != null || onAccessTokenReceived != null) {
+                    viewModel.getBearerToken(it.code)
+                }
+                Dismiss -> onDismiss()
             }
         }.launchIn(this)
     }
@@ -104,6 +104,7 @@ private fun WebAuth(
     modifier: Modifier = Modifier,
     onCodeReceived: (String?) -> Unit = {},
     onPageLoaded: () -> Unit = {},
+    onDismiss: () -> Unit = {},
 ) {
     AndroidView(
         modifier = modifier,
@@ -128,16 +129,16 @@ private fun WebAuth(
                 Logger.log("User agent: ${settings.userAgentString}")
                 Logger.log("Opening url for login: $url")
                 loadUrl(url)
-                setBackListener()
+                setBackListener(onDismiss = onDismiss)
             }
         }
     )
 }
 
-private fun WebView.setBackListener() {
+private fun WebView.setBackListener(onDismiss: () -> Unit = {}) {
     setOnKeyListener { _, keyCode, keyEvent ->
-        if (keyEvent.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK && canGoBack()) {
-            goBack()
+        if (keyEvent.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+            onDismiss()
             true
         } else {
             false

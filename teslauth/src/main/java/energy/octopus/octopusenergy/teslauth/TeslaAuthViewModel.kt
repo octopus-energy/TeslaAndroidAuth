@@ -3,6 +3,7 @@ package energy.octopus.octopusenergy.teslauth
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import energy.octopus.octopusenergy.teslauth.TeslaAuthViewModel.Event.*
 import energy.octopus.octopusenergy.teslauth.api.TeslaApi
 import energy.octopus.octopusenergy.teslauth.logging.Logger
 import energy.octopus.octopusenergy.teslauth.model.AccessTokenRequest
@@ -54,7 +55,7 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                 )
                 Logger.log("Got bearer token $bearerTokenResponse")
                 _event.emit(
-                    Event.ReceivedBearerToken(
+                    ReceivedBearerToken(
                         AuthToken(
                             accessToken = bearerTokenResponse.accessToken,
                             refreshToken = bearerTokenResponse.refreshToken,
@@ -64,7 +65,7 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                     )
                 )
             } catch (t: Throwable) {
-                _event.emit(Event.Error(t))
+                _event.emit(Error(t))
             } finally {
                 _isLoading.value = false
             }
@@ -84,7 +85,7 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                 )
                 Logger.log("Got auth token $authTokenResponse")
                 _event.emit(
-                    Event.ReceivedAccessToken(
+                    ReceivedAccessToken(
                         AuthToken(
                             accessToken = authTokenResponse.accessToken,
                             refreshToken = authTokenResponse.refreshToken,
@@ -94,19 +95,36 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
                     )
                 )
             } catch (t: Throwable) {
-                _event.emit(Event.Error(t))
+                _event.emit(Error(t))
             } finally {
                 _isLoading.value = false
             }
         }
     }
 
+    fun onCodeReceived(code: String?) {
+        code ?: return
+
+        viewModelScope.launch {
+            val error = code.substringAfter("error", missingDelimiterValue = "")
+            _event.emit(
+                if (error.isNotBlank()) {
+                    if (error.contains("cancelled", ignoreCase = true)) Dismiss
+                    else Error(IllegalStateException("Auth failed with: $error"))
+                } else AuthorizationCodeReceived(code)
+            )
+        }
+    }
+
+
     fun onPageLoaded() {
         _isLoading.value = false
     }
 
     sealed class Event {
+        object Dismiss : Event()
         data class Error(val t: Throwable) : Event()
+        data class AuthorizationCodeReceived(val code: String) : Event()
         data class ReceivedBearerToken(val token: AuthToken) : Event()
         data class ReceivedAccessToken(val token: AuthToken) : Event()
     }
