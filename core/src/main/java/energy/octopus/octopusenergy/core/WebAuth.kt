@@ -16,6 +16,10 @@ fun WebAuth(
     url: String,
     redirectUri: String,
     modifier: Modifier = Modifier,
+    octopusWebSettings: OctopusWebSettings = OctopusWebSettings(
+        javaScriptEnabled = true,
+        domStorageEnabled = false,
+    ),
     onCodeReceived: (String?) -> Unit = {},
     onPageLoaded: () -> Unit = {},
     onDismiss: () -> Unit = {},
@@ -33,7 +37,8 @@ fun WebAuth(
                 settings.apply {
                     userAgentString = "UA"
                     // TODO Check if there's a way to authenticate without enabling JavaScript
-                    javaScriptEnabled = true
+                    javaScriptEnabled = octopusWebSettings.javaScriptEnabled
+                    domStorageEnabled = octopusWebSettings.domStorageEnabled
                 }
                 webViewClient = AuthWebViewClient(
                     onCodeParsed = onCodeReceived,

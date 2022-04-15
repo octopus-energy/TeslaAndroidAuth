@@ -8,6 +8,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import energy.octopus.octopusenergy.core.OctopusWebSettings
 import energy.octopus.octopusenergy.core.WebAuth
 import energy.octopus.octopusenergy.core.logging.LogLevel
 import energy.octopus.octopusenergy.core.logging.Logger
@@ -51,6 +52,10 @@ fun OhmeAuth(
             url = getUrl(clientId, redirectUri, state),
             redirectUri = redirectUri,
             modifier = modifier.fillMaxSize(),
+            octopusWebSettings = OctopusWebSettings(
+                javaScriptEnabled = true,
+                domStorageEnabled = true
+            ),
             onCodeReceived = { code ->
                 code?.let {
                     onAuthorizationCodeReceived?.invoke(it)
