@@ -1,4 +1,4 @@
-package energy.octopus.octopusenergy.teslauth.model
+package energy.octopus.octopusenergy.core.model
 
 /**
  * Holds information about the authorization token from
