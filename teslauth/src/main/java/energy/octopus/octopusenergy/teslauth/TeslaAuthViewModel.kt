@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import energy.octopus.octopusenergy.teslauth.TeslaAuthViewModel.Event.*
 import energy.octopus.octopusenergy.teslauth.api.TeslaApi
 import energy.octopus.octopusenergy.teslauth.logging.Logger
-import energy.octopus.octopusenergy.teslauth.model.AccessTokenRequest
 import energy.octopus.octopusenergy.teslauth.model.AuthToken
 import energy.octopus.octopusenergy.teslauth.model.BearerTokenRequest
 import energy.octopus.octopusenergy.teslauth.util.*
@@ -72,36 +71,6 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
         }
     }
 
-    fun getAccessToken(bearerToken: AuthToken) {
-        _isLoading.value = true
-        viewModelScope.launch {
-            try {
-                val authTokenResponse = api.exchangeBearerTokenForAccessToken(
-                    bearerToken.accessToken, AccessTokenRequest(
-                        grantType = JWT_BEARER_GRANT_TYPE,
-                        clientId = CLIENT_ID,
-                        clientSecret = CLIENT_SECRET,
-                    )
-                )
-                Logger.log("Got auth token $authTokenResponse")
-                _event.emit(
-                    ReceivedAccessToken(
-                        AuthToken(
-                            accessToken = authTokenResponse.accessToken,
-                            refreshToken = authTokenResponse.refreshToken,
-                            expiresIn = authTokenResponse.expiresIn,
-                            createdAt = authTokenResponse.createdAt
-                        )
-                    )
-                )
-            } catch (t: Throwable) {
-                _event.emit(Error(t))
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
     fun onCodeReceived(code: String?) {
         code ?: return
 
@@ -126,6 +95,5 @@ internal class TeslaAuthViewModel(private val api: TeslaApi = TeslaApi()) : View
         data class Error(val t: Throwable) : Event()
         data class AuthorizationCodeReceived(val code: String) : Event()
         data class ReceivedBearerToken(val token: AuthToken) : Event()
-        data class ReceivedAccessToken(val token: AuthToken) : Event()
     }
 }

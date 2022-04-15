@@ -36,10 +36,9 @@ class MainActivity : AppCompatActivity() {
                         },
                         onBearerTokenReceived = {
                             Log.i(TAG, "Bearer token: $it")
-                        },
-                        onAccessTokenReceived = {
                             message = it.toString()
-                        }, onError = {
+                        },
+                        onError = {
                             message = it.toString()
                         }, onDismiss = {
                             message = "Dismissed"
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                             modifier = Modifier
                                 .wrapContentSize()
                                 .align(Alignment.Center),
-                            style = MaterialTheme.typography.body2.copy(color = MaterialTheme.colors.onPrimary)
+                            style = MaterialTheme.typography.body2,
                         )
                     }
                 }
