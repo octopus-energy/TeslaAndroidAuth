@@ -14,6 +14,7 @@ import energy.octopus.octopusenergy.core.util.LoadingWebChromeClient
 @Composable
 fun WebAuth(
     url: String,
+    redirectUri: String,
     modifier: Modifier = Modifier,
     onCodeReceived: (String?) -> Unit = {},
     onPageLoaded: () -> Unit = {},
@@ -36,7 +37,7 @@ fun WebAuth(
                 }
                 webViewClient = AuthWebViewClient(
                     onCodeParsed = onCodeReceived,
-                    redirectUri = "https://auth.tesla.com/void/callback?"
+                    redirectUri = redirectUri,
                 )
                 webChromeClient = LoadingWebChromeClient {
                     visibility = View.VISIBLE
