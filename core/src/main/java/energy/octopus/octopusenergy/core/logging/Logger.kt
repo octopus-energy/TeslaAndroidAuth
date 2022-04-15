@@ -1,4 +1,4 @@
-package energy.octopus.octopusenergy.teslauth.logging
+package energy.octopus.octopusenergy.core.logging
 
 import android.util.Log
 

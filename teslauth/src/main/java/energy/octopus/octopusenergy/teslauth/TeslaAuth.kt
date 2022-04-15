@@ -17,9 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import energy.octopus.octopusenergy.core.logging.LogLevel
+import energy.octopus.octopusenergy.core.logging.Logger
+import energy.octopus.octopusenergy.core.util.AuthWebViewClient
+import energy.octopus.octopusenergy.core.util.LoadingWebChromeClient
 import energy.octopus.octopusenergy.teslauth.TeslaAuthViewModel.Event.*
-import energy.octopus.octopusenergy.teslauth.logging.LogLevel
-import energy.octopus.octopusenergy.teslauth.logging.Logger
 import energy.octopus.octopusenergy.teslauth.model.AuthToken
 import energy.octopus.octopusenergy.teslauth.util.*
 import kotlinx.coroutines.flow.launchIn
@@ -117,7 +119,7 @@ private fun WebAuth(
                     // TODO Check if there's a way to authenticate without enabling JavaScript
                     javaScriptEnabled = true
                 }
-                webViewClient = TeslaWebViewClient(onCodeParsed = onCodeReceived)
+                webViewClient = AuthWebViewClient(onCodeParsed = onCodeReceived)
                 webChromeClient = LoadingWebChromeClient {
                     visibility = View.VISIBLE
                     onPageLoaded()
