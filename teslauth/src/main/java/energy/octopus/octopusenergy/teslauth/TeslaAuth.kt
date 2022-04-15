@@ -1,8 +1,5 @@
 package energy.octopus.octopusenergy.teslauth
 
-import android.view.KeyEvent
-import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.*
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
@@ -15,12 +12,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import energy.octopus.octopusenergy.core.WebAuth
 import energy.octopus.octopusenergy.core.logging.LogLevel
 import energy.octopus.octopusenergy.core.logging.Logger
-import energy.octopus.octopusenergy.core.util.AuthWebViewClient
-import energy.octopus.octopusenergy.core.util.LoadingWebChromeClient
 import energy.octopus.octopusenergy.teslauth.TeslaAuthViewModel.Event.*
 import energy.octopus.octopusenergy.teslauth.model.AuthToken
 import kotlinx.coroutines.flow.launchIn
@@ -92,56 +87,5 @@ fun TeslAuth(
                 Dismiss -> onDismiss()
             }
         }.launchIn(this)
-    }
-}
-
-@Composable
-private fun WebAuth(
-    url: String,
-    modifier: Modifier = Modifier,
-    onCodeReceived: (String?) -> Unit = {},
-    onPageLoaded: () -> Unit = {},
-    onDismiss: () -> Unit = {},
-) {
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            WebView(context).apply {
-                visibility = View.INVISIBLE
-                layoutParams = ViewGroup.LayoutParams(
-                    MATCH_PARENT,
-                    MATCH_PARENT
-                )
-
-                settings.apply {
-                    userAgentString = "UA"
-                    // TODO Check if there's a way to authenticate without enabling JavaScript
-                    javaScriptEnabled = true
-                }
-                webViewClient = AuthWebViewClient(
-                    onCodeParsed = onCodeReceived,
-                    redirectUri = "https://auth.tesla.com/void/callback?"
-                )
-                webChromeClient = LoadingWebChromeClient {
-                    visibility = View.VISIBLE
-                    onPageLoaded()
-                }
-                Logger.log("User agent: ${settings.userAgentString}")
-                Logger.log("Opening url for login: $url")
-                loadUrl(url)
-                setBackListener(onDismiss = onDismiss)
-            }
-        }
-    )
-}
-
-private fun WebView.setBackListener(onDismiss: () -> Unit = {}) {
-    setOnKeyListener { _, keyCode, keyEvent ->
-        if (keyEvent.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
-            onDismiss()
-            true
-        } else {
-            false
-        }
     }
 }

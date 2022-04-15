@@ -5,7 +5,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import energy.octopus.octopusenergy.core.logging.Logger
 
-class AuthWebViewClient(
+internal class AuthWebViewClient(
     private val onCodeParsed: (String?) -> Unit,
     private val redirectUri: String,
     private val resultParameterKey: String = "code"
