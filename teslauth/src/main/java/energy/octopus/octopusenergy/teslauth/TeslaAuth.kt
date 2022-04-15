@@ -61,6 +61,7 @@ fun TeslAuth(
     Box(modifier.fillMaxSize()) {
         WebAuth(
             url = viewModel.url,
+            redirectUri = "https://auth.tesla.com/void/callback?",
             modifier = modifier.fillMaxSize(),
             onCodeReceived = viewModel::onCodeReceived,
             onPageLoaded = viewModel::onPageLoaded,
