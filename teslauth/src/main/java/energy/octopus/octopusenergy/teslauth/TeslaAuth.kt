@@ -36,8 +36,6 @@ typealias OnTokenReceivedCallback = (AuthToken) -> Unit
  *  @param onAuthorizationCodeReceived callback called with the code represented by a [String] as parameter if getting the authorization code was successful,
  *  @see <a href="https://tesla-api.timdorr.com/api-basics/authentication#step-2-obtain-an-authorization-code">Step 2: Obtain an authorization code</a>
  *  @param onBearerTokenReceived callback called with the [AuthToken] as parameter if getting the bearer token was successful,
- *  @see <a href="https://tesla-api.timdorr.com/api-basics/authentication#step-3-exchange-authorization-code-for-bearer-token">Step 3: Exchange authorization code for bearer token</a>
- *  @param onAccessTokenReceived callback called with the [AuthToken] as parameter if getting the authorization token was successful,
  *  @see <a href="https://tesla-api.timdorr.com/api-basics/authentication#refreshing-an-access-token">https://tesla-api.timdorr.com/api-basics/authentication#refreshing-an-access-token</a>
  *  @param onError callback called with the [Throwable] that occurred when trying to get the authorization token
  *  @param onDismiss called when the underlying [WebView] can't go back and the back press represents a dismiss of the Authentication WebView
@@ -50,7 +48,6 @@ fun TeslAuth(
     logLevel: LogLevel = LogLevel.EMPTY,
     onAuthorizationCodeReceived: OnAuthorizationCodeReceivedCallback? = null,
     onBearerTokenReceived: OnTokenReceivedCallback? = null,
-    onAccessTokenReceived: OnTokenReceivedCallback? = null,
     onError: (Throwable) -> Unit = {},
     onDismiss: () -> Unit = {},
     loadingIndicator: @Composable BoxScope.() -> Unit = {
@@ -83,15 +80,11 @@ fun TeslAuth(
             when (it) {
                 is ReceivedBearerToken -> {
                     onBearerTokenReceived?.invoke(it.token)
-                    if (onAccessTokenReceived != null) {
-                        viewModel.getAccessToken(it.token)
-                    }
                 }
-                is ReceivedAccessToken -> onAccessTokenReceived?.invoke(it.token)
                 is Error -> onError(it.t)
                 is AuthorizationCodeReceived -> {
                     onAuthorizationCodeReceived?.invoke(it.code)
-                    if (onBearerTokenReceived != null || onAccessTokenReceived != null) {
+                    if (onBearerTokenReceived != null) {
                         viewModel.getBearerToken(it.code)
                     }
                 }

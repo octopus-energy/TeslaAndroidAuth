@@ -1,7 +1,6 @@
 package energy.octopus.octopusenergy.teslauth.api
 
 import energy.octopus.octopusenergy.teslauth.logging.LogLevel.*
-import energy.octopus.octopusenergy.teslauth.model.AccessTokenRequest
 import energy.octopus.octopusenergy.teslauth.model.BearerTokenRequest
 import energy.octopus.octopusenergy.teslauth.model.TokenResponse
 import io.ktor.client.*
@@ -38,22 +37,6 @@ internal class TeslaApi {
             url {
                 takeFrom("https://auth.tesla.com")
                 encodedPath = "oauth2/v3/token"
-            }
-            json()
-            body = request
-        }
-
-    suspend fun exchangeBearerTokenForAccessToken(
-        bearerToken: String,
-        request: AccessTokenRequest
-    ): TokenResponse =
-        client.post {
-            url {
-                takeFrom("https://owner-api.teslamotors.com")
-                encodedPath = "oauth/token"
-            }
-            headers {
-                append(HttpHeaders.Authorization, "Bearer $bearerToken")
             }
             json()
             body = request
