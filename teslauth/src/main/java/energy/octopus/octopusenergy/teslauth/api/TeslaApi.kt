@@ -1,6 +1,6 @@
 package energy.octopus.octopusenergy.teslauth.api
 
-import energy.octopus.octopusenergy.teslauth.logging.LogLevel.*
+import energy.octopus.octopusenergy.core.logging.LogLevel.*
 import energy.octopus.octopusenergy.teslauth.model.BearerTokenRequest
 import energy.octopus.octopusenergy.teslauth.model.TokenResponse
 import io.ktor.client.*
@@ -9,7 +9,7 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import energy.octopus.octopusenergy.teslauth.logging.Logger as TeslaAuthLogger
+import energy.octopus.octopusenergy.core.logging.Logger as TeslaAuthLogger
 
 internal class TeslaApi {
 

@@ -1,11 +1,11 @@
-package energy.octopus.octopusenergy.teslauth.util
+package energy.octopus.octopusenergy.core.util
 
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import energy.octopus.octopusenergy.teslauth.logging.Logger
+import energy.octopus.octopusenergy.core.logging.Logger
 
-internal class TeslaWebViewClient(
+class AuthWebViewClient(
     val onCodeParsed: (String?) -> Unit,
 ) : WebViewClient() {
 

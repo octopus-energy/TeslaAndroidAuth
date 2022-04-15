@@ -16,8 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import energy.octopus.octopusenergy.core.logging.LogLevel
 import energy.octopus.octopusenergy.teslauth.TeslAuth
-import energy.octopus.octopusenergy.teslauth.logging.LogLevel
 
 private const val TAG = "tesla_auth_test"
 
