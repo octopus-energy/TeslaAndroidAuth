@@ -1,6 +1,5 @@
 package energy.octopus.octopusenergy.teslauth
 
-import android.view.ViewGroup.LayoutParams.*
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -16,8 +15,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import energy.octopus.octopusenergy.core.WebAuth
 import energy.octopus.octopusenergy.core.logging.LogLevel
 import energy.octopus.octopusenergy.core.logging.Logger
+import energy.octopus.octopusenergy.core.model.AuthToken
 import energy.octopus.octopusenergy.teslauth.TeslaAuthViewModel.Event.*
-import energy.octopus.octopusenergy.teslauth.model.AuthToken
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
