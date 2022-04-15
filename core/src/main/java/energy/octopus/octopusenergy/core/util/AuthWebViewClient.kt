@@ -20,6 +20,7 @@ internal class AuthWebViewClient(
 
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?) =
         request?.url?.toString()?.let {
+            Logger.log(it)
             if (it.startsWith(redirectUri)) {
                 code = it.substringAfter("$resultParameterKey=").substringBefore("&")
                 return@let true
