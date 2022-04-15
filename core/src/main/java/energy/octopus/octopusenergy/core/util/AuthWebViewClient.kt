@@ -6,7 +6,9 @@ import android.webkit.WebViewClient
 import energy.octopus.octopusenergy.core.logging.Logger
 
 class AuthWebViewClient(
-    val onCodeParsed: (String?) -> Unit,
+    private val onCodeParsed: (String?) -> Unit,
+    private val redirectUri: String,
+    private val resultParameterKey: String = "code"
 ) : WebViewClient() {
 
     var code: String? = null
@@ -18,8 +20,8 @@ class AuthWebViewClient(
 
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?) =
         request?.url?.toString()?.let {
-            if (it.startsWith("https://auth.tesla.com/void/callback?")) {
-                code = it.substringAfter("code=").substringBefore("&")
+            if (it.startsWith(redirectUri)) {
+                code = it.substringAfter("$resultParameterKey=").substringBefore("&")
                 return@let true
             }
             false
