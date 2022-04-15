@@ -23,7 +23,6 @@ import energy.octopus.octopusenergy.core.util.AuthWebViewClient
 import energy.octopus.octopusenergy.core.util.LoadingWebChromeClient
 import energy.octopus.octopusenergy.teslauth.TeslaAuthViewModel.Event.*
 import energy.octopus.octopusenergy.teslauth.model.AuthToken
-import energy.octopus.octopusenergy.teslauth.util.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -119,7 +118,10 @@ private fun WebAuth(
                     // TODO Check if there's a way to authenticate without enabling JavaScript
                     javaScriptEnabled = true
                 }
-                webViewClient = AuthWebViewClient(onCodeParsed = onCodeReceived)
+                webViewClient = AuthWebViewClient(
+                    onCodeParsed = onCodeReceived,
+                    redirectUri = "https://auth.tesla.com/void/callback?"
+                )
                 webChromeClient = LoadingWebChromeClient {
                     visibility = View.VISIBLE
                     onPageLoaded()
