@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':core')
+    implementation("energy.octopus:android-auth-core:1.0.0")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.runtime:runtime:$composeVersion")
@@ -56,7 +56,7 @@ dependencies {
 
 ext {
     PUBLISH_GROUP_ID = 'energy.octopus'
-    PUBLISH_VERSION = '0.1.5'
+    PUBLISH_VERSION = '0.1.6'
     PUBLISH_ARTIFACT_ID = 'tesla-android-auth'
 }
 
