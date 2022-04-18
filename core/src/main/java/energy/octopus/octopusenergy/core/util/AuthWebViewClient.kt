@@ -7,7 +7,7 @@ import energy.octopus.octopusenergy.core.logging.Logger
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
-class AuthWebViewClient(
+internal class AuthWebViewClient(
     private val onCodeParsed: (String?) -> Unit,
     private val redirectUri: String,
     private val resultParameterKey: String = "code"

@@ -4,7 +4,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import energy.octopus.octopusenergy.core.logging.Logger
 
-class LoadingWebChromeClient(
+internal class LoadingWebChromeClient(
     val onPageLoaded: () -> Unit,
 ) : WebChromeClient() {
 

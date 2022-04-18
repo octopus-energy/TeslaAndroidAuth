@@ -15,19 +15,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import energy.octopus.octopusenergy.core.WebAuth
 import energy.octopus.octopusenergy.core.logging.LogLevel
 import energy.octopus.octopusenergy.core.logging.Logger
-import energy.octopus.octopusenergy.core.model.AuthToken
 import energy.octopus.octopusenergy.teslauth.TeslaAuthViewModel.Event.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 
 typealias OnAuthorizationCodeReceivedCallback = (String) -> Unit
-typealias OnTokenReceivedCallback = (AuthToken) -> Unit
+
+typealias OnTokenReceivedCallback = (accessToken: String, refreshToken: String, expiresIn: Long, createdAt: Long?) -> Unit
 
 /**
  *  A Composable that shows an embedded [WebView] for Tesla Authentication
  *  @param modifier Modifier to be applied to the button
- *  @param logLevel specifies the [LogLevel] to be used
+ *  @param isLoggingEnabled whether Logging is enabled or not
  *  @param onAuthorizationCodeReceived callback called with the code represented by a [String] as parameter if getting the authorization code was successful,
  *  @see <a href="https://tesla-api.timdorr.com/api-basics/authentication#step-2-obtain-an-authorization-code">Step 2: Obtain an authorization code</a>
  *  @param onBearerTokenReceived callback called with the [AuthToken] as parameter if getting the bearer token was successful,
@@ -40,7 +40,7 @@ typealias OnTokenReceivedCallback = (AuthToken) -> Unit
 @Composable
 fun TeslAuth(
     modifier: Modifier = Modifier,
-    logLevel: LogLevel = LogLevel.EMPTY,
+    isLoggingEnabled: Boolean = false,
     onAuthorizationCodeReceived: OnAuthorizationCodeReceivedCallback? = null,
     onBearerTokenReceived: OnTokenReceivedCallback? = null,
     onError: (Throwable) -> Unit = {},
@@ -53,7 +53,7 @@ fun TeslAuth(
         )
     },
 ) {
-    Logger.level = logLevel
+    Logger.level = if (isLoggingEnabled) LogLevel.DEFAULT else LogLevel.EMPTY
     val viewModel: TeslaAuthViewModel = viewModel()
     val isLoading by viewModel.isLoading.collectAsState()
 
@@ -75,7 +75,12 @@ fun TeslAuth(
         viewModel.event.onEach {
             when (it) {
                 is ReceivedBearerToken -> {
-                    onBearerTokenReceived?.invoke(it.token)
+                    onBearerTokenReceived?.invoke(
+                        it.token.accessToken,
+                        it.token.refreshToken,
+                        it.token.expiresIn,
+                        it.token.createdAt
+                    )
                 }
                 is Error -> onError(it.t)
                 is AuthorizationCodeReceived -> {

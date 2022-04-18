@@ -18,7 +18,7 @@ typealias OnAuthorizationCodeReceivedCallback = (String) -> Unit
 /**
  *  A Composable that shows an embedded [WebView] for Ohme Authentication
  *  @param modifier Modifier to be applied to the button
- *  @param logLevel specifies the [LogLevel] to be used
+ *  @param isLoggingEnabled whether Logging is enabled or not
  *  @param onAuthorizationCodeReceived callback called with the code represented by a [String] as parameter if getting the authorization code was successful
  *  @param onError callback called with the [Throwable] that occurred when trying to get the authorization token
  *  @param onDismiss called when the underlying [WebView] can't go back and the back press represents a dismiss of the Authentication WebView
@@ -31,7 +31,7 @@ fun OhmeAuth(
     redirectUri: String,
     state: String,
     modifier: Modifier = Modifier,
-    logLevel: LogLevel = LogLevel.EMPTY,
+    isLoggingEnabled: Boolean = false,
     onAuthorizationCodeReceived: OnAuthorizationCodeReceivedCallback? = null,
     onError: (Throwable) -> Unit = {},
     onDismiss: () -> Unit = {},
@@ -43,7 +43,7 @@ fun OhmeAuth(
         )
     },
 ) {
-    Logger.level = logLevel
+    Logger.level = if (isLoggingEnabled) LogLevel.DEFAULT else LogLevel.EMPTY
     var isLoading by remember { mutableStateOf(true) }
 
 
