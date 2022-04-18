@@ -3,9 +3,9 @@ package energy.octopus.octopusenergy.teslauth
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import energy.octopus.octopusenergy.core.model.AuthToken
 import energy.octopus.octopusenergy.teslauth.TeslaAuthViewModel.Event.*
 import energy.octopus.octopusenergy.teslauth.api.TeslaApi
+import energy.octopus.octopusenergy.teslauth.model.AuthToken
 import energy.octopus.octopusenergy.teslauth.model.BearerTokenRequest
 import energy.octopus.octopusenergy.teslauth.util.*
 import kotlinx.coroutines.flow.MutableSharedFlow

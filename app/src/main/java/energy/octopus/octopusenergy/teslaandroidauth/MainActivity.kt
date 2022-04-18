@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import energy.octopus.octopusenergy.core.logging.LogLevel
 import energy.octopus.octopusenergy.teslauth.TeslAuth
 
 private const val TAG = "tesla_auth_test"
@@ -30,13 +29,12 @@ class MainActivity : AppCompatActivity() {
                 var message by remember { mutableStateOf<String?>(null) }
                 if (message == null) {
                     TeslAuth(
-                        logLevel = LogLevel.DEFAULT,
                         onAuthorizationCodeReceived = {
                             Log.i(TAG, "Authorization Code: $it")
                         },
-                        onBearerTokenReceived = {
-                            Log.i(TAG, "Bearer token: $it")
-                            message = it.toString()
+                        onBearerTokenReceived = { accessToken, _, _, _ ->
+                            Log.i(TAG, "Bearer token: $accessToken")
+                            message = accessToken
                         },
                         onError = {
                             message = it.toString()
