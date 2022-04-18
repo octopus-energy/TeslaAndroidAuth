@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation("energy.octopus:android-auth-core:1.0.0")
+    implementation("energy.octopus:android-auth-core:1.0.1")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.runtime:runtime:$composeVersion")
