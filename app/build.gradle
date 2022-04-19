@@ -47,8 +47,9 @@ android {
 }
 
 dependencies {
-    implementation("energy.octopus:tesla-android-auth:0.1.6")
-    implementation("energy.octopus:ohme-android-auth:0.1.2")
+    def octopusAuth = "1.2.0"
+    implementation("energy.octopus:tesla-android-auth:$octopusAuth")
+    implementation("energy.octopus:ohme-android-auth:$octopusAuth")
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
