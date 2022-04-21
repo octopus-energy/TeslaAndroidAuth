@@ -32,6 +32,7 @@ fun OhmeAuth(
     state: String,
     modifier: Modifier = Modifier,
     isLoggingEnabled: Boolean = false,
+    isDebug: Boolean = false,
     onAuthorizationCodeReceived: OnAuthorizationCodeReceivedCallback? = null,
     onError: (Throwable) -> Unit = {},
     onDismiss: () -> Unit = {},
@@ -49,7 +50,7 @@ fun OhmeAuth(
 
     Box(modifier.fillMaxSize()) {
         WebAuth(
-            url = getUrl(clientId, redirectUri, state),
+            url = getUrl(isDebug, clientId, redirectUri, state),
             redirectUri = redirectUri,
             modifier = modifier.fillMaxSize(),
             octopusWebSettings = OctopusWebSettings(
@@ -72,5 +73,8 @@ fun OhmeAuth(
     }
 }
 
-private fun getUrl(clientId: String, redirectUri: String, state: String) =
-    "https://api-dev.ohme.io/#/authentication/login?&response_type=code&client_id=$clientId&redirect_uri=$redirectUri&scope=app&state=$state"
+private const val debugHost = "api-dev.ohme.io"
+private const val liveHost = "api.ohme.io"
+
+private fun getUrl(isDebug: Boolean, clientId: String, redirectUri: String, state: String) =
+    "https://${if (isDebug) debugHost else liveHost}/#/authentication/login?&response_type=code&client_id=$clientId&redirect_uri=$redirectUri&scope=app&state=$state"
