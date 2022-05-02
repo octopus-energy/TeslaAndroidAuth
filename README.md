@@ -16,8 +16,27 @@ dependencies {
 ## Usage
 
 Supports only **Compose** for now
+
+### Tesla
 ```
 TeslAuth(
+        onError = {
+            // Handle error
+        },
+        onSuccess = {
+            // Handle success
+        },
+        loadingIndicator = {
+            // Your custom loading indicator composable
+        }
+    )
+```
+### Ohme
+```
+OhmeAuth(
+        clientId = yourOhmeClientId,
+        redirectUri = yourOhmeRedirectUri,
+        state = ohmeState,
         onError = {
             // Handle error
         },
